@@ -74,7 +74,7 @@ class LoginActivity : AppCompatActivity() {
         val textOfPassword = editTextPassword.text.toString().trim()
         val textOfPhone = editTextPhone.text.toString().trim()
 
-        // if all statements is true then passes MainActivity
+        // -- if all statements is true then passes MainActivity
         if (!TextUtils.isEmpty(textOfPassword)
                 && !TextUtils.isEmpty(textOfPhone)
                 && (textOfPassword.length >= 6)) {
@@ -82,7 +82,7 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this@LoginActivity, MainActivity::class.java))
             finish()
 
-        } else { // but if only one statement is not true then set error message to EditText
+        } else { // -- but if only one statement is not true then set error message to EditText
 
             if (textOfPhone.isEmpty()) {
 

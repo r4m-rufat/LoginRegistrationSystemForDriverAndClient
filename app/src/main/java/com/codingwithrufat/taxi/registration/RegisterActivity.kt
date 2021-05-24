@@ -202,6 +202,7 @@ class RegisterActivity : AppCompatActivity() {
         val textOfName = editTextName.text.toString().trim()
         val textOfNumber = editTextNumber.text.toString().trim()
 
+        // -- if all statements is true then passes VerificationActivity
         if (!TextUtils.isEmpty(textOfPassword)
                 && !TextUtils.isEmpty(textOfName)
                 && (textOfName.length >= 3)
@@ -213,7 +214,7 @@ class RegisterActivity : AppCompatActivity() {
             progressDialog.show()
             firebasePhoneRegistration()
 
-        }else{
+        }else{ // -- but if only one statement is not true then set error message to EditText
 
             if (textOfName.length < 3){
 
