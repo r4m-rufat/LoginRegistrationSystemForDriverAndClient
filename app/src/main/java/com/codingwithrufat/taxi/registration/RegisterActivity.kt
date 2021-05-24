@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.InputType
+import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -49,10 +50,7 @@ class RegisterActivity : AppCompatActivity() {
         progressDialog = ProgressDialog(context)
         createAccount.setOnClickListener {
 
-            progressDialog.setMessage("Please Wait... Verificatoin code will send you")
-            progressDialog.setCancelable(false)
-            progressDialog.show()
-            firebasePhoneRegistration()
+            setupEditTextCharacters()
 
         }
 
@@ -163,6 +161,8 @@ class RegisterActivity : AppCompatActivity() {
                 // This callback is invoked in an invalid request for verification is made,
                 // for instance if the the phone number format is not valid.
                 Log.w(TAG, "onVerificationFailed: ", exception);
+                progressDialog.dismiss()
+                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
             }
 
         }
@@ -194,6 +194,47 @@ class RegisterActivity : AppCompatActivity() {
 
             }
         }
+    }
+
+    private fun setupEditTextCharacters(){
+
+        val textOfPassword = editTextPassword.text.toString().trim()
+        val textOfName = editTextName.text.toString().trim()
+        val textOfNumber = editTextNumber.text.toString().trim()
+
+        if (!TextUtils.isEmpty(textOfPassword)
+                && !TextUtils.isEmpty(textOfName)
+                && (textOfName.length >= 3)
+                && (textOfPassword.length >= 6)
+                && !TextUtils.isEmpty(textOfNumber)){
+
+            progressDialog.setMessage("Please Wait... Verification code will send you")
+            progressDialog.setCancelable(false)
+            progressDialog.show()
+            firebasePhoneRegistration()
+
+        }else{
+
+            if (textOfName.length < 3){
+
+                editTextName.error = "At least 3 characters!"
+
+            }
+
+            if (textOfPassword.length < 6){
+
+                editTextPassword.error = "At least 6 characters!"
+
+            }
+
+            if (textOfNumber.isEmpty()){
+
+                editTextNumber.error = "Please write correct format!"
+
+            }
+
+        }
+
     }
 
 }

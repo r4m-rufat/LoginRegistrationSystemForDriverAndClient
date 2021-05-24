@@ -50,6 +50,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@+id/ic_person"
                     android:background="@null"
+                    android:layout_marginRight="10dp"
                     android:hint="Name and surname"
                     android:textSize="14sp" />
 
@@ -97,6 +98,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:background="@null"
                     android:hint="Enter your number"
                     android:textSize="14sp" />
@@ -137,7 +139,9 @@
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@id/ic_lock"
+                    android:layout_toLeftOf="@+id/ic_eyeForSignUpPage"
                     android:background="@null"
+                    android:layout_marginRight="5dp"
                     android:hint="Enter your password"
                     android:inputType="text"
                     android:textSize="14sp" />
@@ -267,6 +271,6 @@
 
         </RelativeLayout>
 
-
     </RelativeLayout>
+
 </ScrollView>

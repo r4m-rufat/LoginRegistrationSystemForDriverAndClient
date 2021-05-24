@@ -47,6 +47,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="Enter your number"
+                android:layout_marginRight="10dp"
                 android:layout_marginLeft="10dp"
                 android:textSize="14sp"
                 android:background="@null"/>
@@ -87,7 +88,9 @@
                 android:layout_height="match_parent"
                 android:hint="Enter your password"
                 android:layout_marginLeft="10dp"
+                android:layout_toLeftOf="@+id/ic_eyeForSignInPage"
                 android:textSize="14sp"
+                android:layout_marginRight="5dp"
                 android:inputType="textWebPassword"
                 android:background="@null"/>
 
