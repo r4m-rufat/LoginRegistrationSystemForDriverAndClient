@@ -2,18 +2,16 @@ package com.codingwithrufat.taxi.registration
 
 import android.app.ProgressDialog
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.InputType
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.*
 import android.widget.LinearLayout.LayoutParams
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.codingwithrufat.taxi.R
 import com.codingwithrufat.taxi.common.Common
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
 import java.util.concurrent.TimeUnit
@@ -41,13 +39,13 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
-
         getWidgets()
         clickBackButton()
         spinnerItemClicked()
         commonClassMethods()
 
         progressDialog = ProgressDialog(context)
+
         createAccount.setOnClickListener {
 
             setupEditTextCharacters()
@@ -58,25 +56,30 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     // -- when spinner item is changed to client then EditText(car name) become gone otherwise everything back previous situation
-    private fun spinnerItemClicked(){
+    private fun spinnerItemClicked() {
 
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
 
                 var paramWithoutCar = LayoutParams(
-                        0,
-                        LayoutParams.MATCH_PARENT,
-                        2.0f
+                    0,
+                    LayoutParams.MATCH_PARENT,
+                    2.0f
                 )
 
                 var paramWithCar = LayoutParams(
-                        0,
-                        LayoutParams.MATCH_PARENT,
-                        1.0f
+                    0,
+                    LayoutParams.MATCH_PARENT,
+                    1.0f
                 )
                 paramWithCar.setMargins(15, 0, 0, 0)
 
-                when(spinner.selectedItem){
+                when (spinner.selectedItem) {
 
                     "Client" -> {
                         cardViewCar.visibility = View.GONE
@@ -100,7 +103,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     // -- initialize widgets
-    private fun getWidgets(){
+    private fun getWidgets() {
 
         backArrow = findViewById(R.id.ic_backFromSignUp)
         spinner = findViewById(R.id.spinner)
@@ -116,7 +119,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     // -- setup for back button click
-    private fun clickBackButton(){
+    private fun clickBackButton() {
 
         backArrow.setOnClickListener {
             startActivity(Intent(this@RegisterActivity, LoginActivity::class.java))
@@ -126,20 +129,30 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     // -- common class is helper class
-    private fun commonClassMethods(){
+    private fun commonClassMethods() {
 
         // password is visible or not statement
         Common().clickedIcEye(iconEye, editTextPassword, this)
 
     }
 
-    private fun firebasePhoneRegistration(){
+    private fun firebasePhoneRegistration() {
 
-        val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks(){
+        val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
-            override fun onCodeSent(verification_code: String, p1: PhoneAuthProvider.ForceResendingToken) {
+            override fun onCodeSent(
+                verification_code: String,
+                p1: PhoneAuthProvider.ForceResendingToken
+            ) {
 
-                var intent = Intent(context, VerificationCodeActivity::class.java).putExtra("verification_code", verification_code)
+                var intent = Intent(
+                    context,
+                    VerificationCodeActivity::class.java
+                ).putExtra("verification_code", verification_code)
+                    .putExtra("spinnerItem", spinner.selectedItem.toString())
+                    .putExtra("username", editTextName.text.toString())
+                    .putExtra("phone", editTextNumber.text.toString())
+                    .putExtra("carName", editTextCarName.text.toString())
                 startActivity(intent)
 
             }
@@ -179,14 +192,14 @@ class RegisterActivity : AppCompatActivity() {
 
     }
 
-    private fun signInWithCredential(credential: PhoneAuthCredential){
+    private fun signInWithCredential(credential: PhoneAuthCredential) {
 
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
-            if (it.isSuccessful){
+            if (it.isSuccessful) {
 
                 firebaseUser = it.result!!.user!!
 
-            }else{
+            } else {
 
                 Log.w(TAG, "signInWithCredential:failure", it.exception)
 
@@ -196,41 +209,50 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupEditTextCharacters(){
+    private fun setupEditTextCharacters() {
 
         val textOfPassword = editTextPassword.text.toString().trim()
         val textOfName = editTextName.text.toString().trim()
         val textOfNumber = editTextNumber.text.toString().trim()
+        val textOfCar = editTextCarName.text.toString().trim()
 
         // -- if all statements is true then passes VerificationActivity
         if (!TextUtils.isEmpty(textOfPassword)
-                && !TextUtils.isEmpty(textOfName)
-                && (textOfName.length >= 3)
-                && (textOfPassword.length >= 6)
-                && !TextUtils.isEmpty(textOfNumber)){
+            && !TextUtils.isEmpty(textOfName)
+            && (textOfName.length >= 3)
+            && (textOfPassword.length >= 6)
+            && !TextUtils.isEmpty(textOfNumber)
+            && textOfCar.isNotEmpty()
+        ) {
 
             progressDialog.setMessage("Please Wait... Verification code will send you")
             progressDialog.setCancelable(false)
             progressDialog.show()
             firebasePhoneRegistration()
 
-        }else{ // -- but if only one statement is not true then set error message to EditText
+        } else { // -- but if only one statement is not true then set error message to EditText
 
-            if (textOfName.length < 3){
+            if (textOfName.length < 3) {
 
                 editTextName.error = "At least 3 characters!"
 
             }
 
-            if (textOfPassword.length < 6){
+            if (textOfPassword.length < 6) {
 
                 editTextPassword.error = "At least 6 characters!"
 
             }
 
-            if (textOfNumber.isEmpty()){
+            if (textOfNumber.isEmpty()) {
 
                 editTextNumber.error = "Please write correct format!"
+
+            }
+
+            if (textOfCar.isEmpty()) {
+
+                editTextCarName.error = "Car name is required"
 
             }
 

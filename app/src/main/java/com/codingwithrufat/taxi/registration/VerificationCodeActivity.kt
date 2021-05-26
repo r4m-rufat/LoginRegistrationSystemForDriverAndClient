@@ -3,10 +3,13 @@ package com.codingwithrufat.taxi.registration
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import com.codingwithrufat.taxi.MainActivity
 import com.codingwithrufat.taxi.R
+import com.codingwithrufat.taxi.models.ClientModel
+import com.codingwithrufat.taxi.models.DriverModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.PhoneAuthCredential
@@ -18,6 +21,8 @@ class VerificationCodeActivity : AppCompatActivity() {
     private lateinit var verifyButton: Button
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var firebaseUser: FirebaseUser
+    private lateinit var spinnerItem: String
+    private val TAG = "VerificationCodeActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +31,7 @@ class VerificationCodeActivity : AppCompatActivity() {
         initializeWidgets()
 
         val getCode = intent.getStringExtra("verification_code")
+        spinnerItem = intent.getStringExtra("spinnerItem")!!
 
         verifyButton.setOnClickListener {
             verifyPhoneNumberWithCode(getCode!!, editVerication.text.toString().trim())
@@ -53,7 +59,9 @@ class VerificationCodeActivity : AppCompatActivity() {
             .addOnCompleteListener {
                 if (it.isSuccessful){
 
-                    firebaseUser = it.result!!.user!!
+                    firebaseUser = FirebaseAuth.getInstance().currentUser!!
+
+                    modelOfClientAndDriver(spinnerItem)
 
                     if (firebaseUser != null){
                         startActivity(Intent(this@VerificationCodeActivity, MainActivity::class.java))
@@ -61,7 +69,34 @@ class VerificationCodeActivity : AppCompatActivity() {
                     }
 
                 }
+            }.addOnFailureListener {
+                Log.w(TAG, "signInWithPhoneAuthCredential: Verification is failure")
             }
+
+    }
+
+    /**
+     * it will be completed later
+     */
+    private fun modelOfClientAndDriver(spinnerItem: String){
+
+        var username = intent.getStringExtra("username")
+        var number = intent.getStringExtra("phone")
+        var carName = intent.getStringExtra("carName")
+
+        when(spinnerItem){
+
+            "Client" -> {
+
+                var clientModel = ClientModel(firebaseUser.uid, username, number, "")
+            }
+
+            "Driver" -> {
+
+                var driverModel = DriverModel(firebaseUser.uid, username, number, carName, "")
+
+            }
+        }
 
     }
 
